@@ -3,13 +3,38 @@ import React from 'react';
 import { requestNewContext } from './utils';
 import ReactCanvas from '../reconciler';
 
-const context = requestNewContext({ title: 'flex-direction: column' });
+export const directionColumn = () => {
+  const { context, canvas } = requestNewContext({ title: 'flex-direction: column' });
 
-ReactCanvas.render(
-  <flex style={{ height: 200, width: 200 }} >
-    <view style={{ height: 60, width: 60 }} />
-    <view style={{ height: 20, width: 100 }} />
-    <view style={{ height: 20, width: 20 }} />
-  </flex>
-  , context
-);
+  setTimeout(() => {
+    ReactCanvas.render(
+      <flex style={{ height: 200, width: 200 }}>
+        <view style={{ height: 60, width: 60, backgroundColor: 'red' }}>60 x 60</view>
+        <view style={{ height: 20, width: 100, backgroundColor: 'blue' }}>20 x 100</view>
+        <view style={{ height: 60, width: 60, backgroundColor: 'green' }}>60 x 60</view>
+      </flex>
+      , context
+    );
+  }, 0);
+  
+  return canvas;
+};
+
+export const directionRow = () => {
+  const { context, canvas } = requestNewContext({ title: 'flex-direction: column' });
+
+  setTimeout(() => {
+    ReactCanvas.render(
+      <flex style={{ height: 200, width: 200, flexDirection: 'row' }} >
+        <view style={{ height: 60, width: 60, backgroundColor: 'red' }}>60 x 60</view>
+        <view style={{ height: 20, width: 100, backgroundColor: 'blue' }}>20 x 100</view>
+        <view style={{ height: 60, width: 60, backgroundColor: 'green' }}>60 x 60</view>
+      </flex>
+      , context
+    );
+  }, 0);
+  
+  return canvas;
+};
+
+export default { title: 'flex layout' }

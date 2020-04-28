@@ -1,4 +1,5 @@
-import { Node } from './node';
+import { Node, Props } from './node';
+
 
 export default class RootElement extends Node {
   ctx: CanvasRenderingContext2D;

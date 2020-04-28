@@ -4,5 +4,9 @@ declare namespace JSX {
       style: React.CSSProperties
       children?: Element | Element[]
     }
+    "view": {
+      style: React.CSSProperties
+      children?: Element | Element[] | string
+    }
   }
 }

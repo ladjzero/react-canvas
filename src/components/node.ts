@@ -5,13 +5,15 @@ export interface LayoutRect {
   h: number
 }
 
-export type Style = {
-  width: number
-  height: number
+export interface Style {
+  width?: number
+  height?: number
+  backgroundColor?: string
 }
 
 export interface Props {
   style?: Style
+  children: Node[] | string
 }
 
 export interface Renderable extends LayoutRect {
@@ -30,9 +32,9 @@ export class Node implements Renderable {
   h: number
   type: string
   children: Node[]
-  props: Props
+  props: any
 
-  constructor(props?: Props) {
+  constructor(props?: any) {
     this.props = props
     this.children = []
   }
@@ -45,7 +47,7 @@ export class Node implements Renderable {
     this.children = this.children.filter(c => c !== el);
   }
 
-  layout(x: number = 0, y: number = 0, w: number = this.props?.style?.width, h: number = this.props?.style?.height) {
+  layout(x: number = 0, y: number = 0, w: number = this.props?.style?.width || 0, h: number = this.props?.style?.height || 0) {
     this.children.forEach(c => {
       const layoutRect = c.layout(x, y);
       y += layoutRect.h;
@@ -62,5 +64,6 @@ export class Node implements Renderable {
     ctx.rect(this.x , this.y, this.w, this.h);
     ctx.clip();
     this.children.forEach(c => c.render(ctx));
+    ctx.save();
   }
 }

@@ -1,14 +1,25 @@
 import { Node } from './node';
+import { TextStyle } from 'react-native';
+
+export interface TextProps {
+  style?: TextStyle,
+  children: string | [string]
+}
 
 export default class TextElement extends Node {
-  textContent: string | number;
-  constructor(text: string | number) {
+  constructor(props: TextProps) {
     super();
-    this.textContent = text
+    this.props = props;
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    ctx.font = '48px serif'
-    ctx.fillText(String(this.textContent), 0, 50)
+    const fontSize = this.props?.style?.fontSize || 12;
+    const color = this.props?.style?.color || 'black';
+
+    ctx.save();
+    ctx.font = `${fontSize}px serif`;
+    ctx.fillStyle = color;
+    ctx.fillText(String(this.props.children), this.x, this.y + fontSize);
+    ctx.restore();
   }
 }

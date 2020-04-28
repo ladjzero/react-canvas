@@ -41,6 +41,8 @@ const hostConfig = {
         return new View(props);
       case 'flex':
         return new FlexLayout(props);
+      case 'text':
+        return new Text(props);
       default:
         return new Node(type);
     }
@@ -48,7 +50,7 @@ const hostConfig = {
 
   createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
     // A TextNode instance is returned because literal strings cannot change their value later on update
-    return new Text(text);
+    return new Text({ children: text });
   },
 
   // Actually set the attributes and text content to the cvsElement and check if
@@ -64,7 +66,7 @@ const hostConfig = {
         // Set the textContent only for literal string or number children, whereas
         // nodes will be appended in `appendChild`
         if (typeof propValue === 'string' || typeof propValue === 'number') {
-          cvsElement.children = [new Text(propValue)];
+          cvsElement.children = [new Text({ children: String(propValue) })];
         }
         // const children = Array.isArray(propValue) ? propValue : [propValue];
         // cvsElement.children = children.map(child => typeof child === 'string' || typeof child === 'number' ? new Text(child) : child)
