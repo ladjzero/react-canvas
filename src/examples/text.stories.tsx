@@ -29,5 +29,34 @@ export const styled = () => {
   return canvas;
 }
 
+export const aligned = () => {
+  const { context, canvas } = requestNewContext({ width: 200, height: 200 });
+
+  setTimeout(() => {
+    ReactCanvas.render(
+      <flex style={{ height: 200, width: 200, flexDirection: 'column' }} >
+        <view style={{ height: 60, width: 200, textAlign: 'left' }}>
+          <text>
+            Left
+          </text>
+        </view>
+        <view style={{ height: 60, width: 200, textAlign: 'center' }}>
+          <text>
+            Center
+          </text>
+        </view>
+        <view style={{ height: 60, width: 200, textAlign: 'right' }}>
+          <text>
+            Right
+          </text>
+        </view>
+      </flex>
+      , context
+    );
+  }, 0);
+
+  return canvas;
+}
+
 
 export default { title: 'text' }

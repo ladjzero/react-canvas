@@ -1,7 +1,7 @@
 import { Node } from './node';
 
 export default class FlexLayout extends Node {
-  layout(x: number = 0, y: number = 0, w: number = this.props?.style?.width, h: number = this.props?.style?.height) {
+  layout(ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0, w: number = this.props?.style?.width, h: number = this.props?.style?.height) {
     const flexDirection = this.props?.style?.flexDirection;
     const justifyContent = this.props?.style?.justifyContent;
 
@@ -10,7 +10,7 @@ export default class FlexLayout extends Node {
       let xpointer = x;
 
       this.children.forEach(c => {
-        const layoutRect = c.layout(x, y);
+        const layoutRect = c.layout(ctx, x, y);
         childrenWidthSum += layoutRect.w;
         x += layoutRect.w;
       });
@@ -22,7 +22,7 @@ export default class FlexLayout extends Node {
               const space = (w - childrenWidthSum) / (this.children.length - 1);
               xpointer = x;
               this.children.forEach(c => {
-                const layoutRect = c.layout(xpointer, y);
+                const layoutRect = c.layout(ctx, xpointer, y);
                 xpointer += layoutRect.w + space;
               });
             }
@@ -34,7 +34,7 @@ export default class FlexLayout extends Node {
       let ypointer = y;
 
       this.children.forEach(c => {
-        const layoutRect = c.layout(x, ypointer);
+        const layoutRect = c.layout(ctx, x, ypointer);
         childrenHeightSum += layoutRect.h;
         ypointer += layoutRect.h;
       });
@@ -46,7 +46,7 @@ export default class FlexLayout extends Node {
               const space = (h - childrenHeightSum) / (this.children.length - 1);
               ypointer = y;
               this.children.forEach(c => {
-                const layoutRect = c.layout(x, ypointer);
+                const layoutRect = c.layout(ctx, x, ypointer);
                 ypointer += layoutRect.h + space;
               });
             }
@@ -54,16 +54,12 @@ export default class FlexLayout extends Node {
         }
       }
     }
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    return { x, y, w, h };
+    return this.rect = { x, y, w, h };
   }
 
 
   render(ctx: CanvasRenderingContext2D) {
-    this.layout();
+    this.layout(ctx);
     this.children && this.children.forEach(c => {
       c.render(ctx);
     })

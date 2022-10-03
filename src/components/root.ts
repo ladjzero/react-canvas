@@ -1,4 +1,4 @@
-import { Node, Props } from './node';
+import { Node } from './node';
 
 
 export default class RootElement extends Node {
@@ -13,7 +13,7 @@ export default class RootElement extends Node {
    * @param {CanvasRenderingContext2D} ctx 
    */
   render() {
-    this.layout();
+    this.rect = this.layout(this.ctx);
     this.children.forEach(c => c.render(this.ctx))
   }
 }

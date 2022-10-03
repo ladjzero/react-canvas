@@ -1,35 +1,7 @@
-export interface LayoutRect {
-  x: number
-  y: number
-  w: number
-  h: number
-}
-
-export interface Style {
-  width?: number
-  height?: number
-  backgroundColor?: string
-}
-
-export interface Props {
-  style?: Style
-  children: Node[] | string
-}
-
-export interface Renderable extends LayoutRect {
-  layout: (x: number, y: number, w: number, h: number) => { x: number, y: number, w: number, h: number }
-  props: Props
-  children: Renderable[]
-  render: (ctx: CanvasRenderingContext2D) => void
-  appendChild: (r: Renderable) => void
-  removeChild: (r: Renderable) => void
-}
+import { LayoutContext, LayoutRect, Renderable } from "./types"
 
 export class Node implements Renderable {
-  x: number
-  y: number
-  w: number
-  h: number
+  rect: LayoutRect
   type: string
   children: Node[]
   props: any
@@ -47,23 +19,34 @@ export class Node implements Renderable {
     this.children = this.children.filter(c => c !== el);
   }
 
-  layout(x: number = 0, y: number = 0, w: number = this.props?.style?.width || 0, h: number = this.props?.style?.height || 0) {
+  layout(
+    ctx: LayoutContext,
+    x: number = 0,
+    y: number = 0,
+    w: number = this.props?.style?.width,
+    h: number = this.props?.style?.height,
+  ) {
+    const styleBefore = ctx.style;
+    const styleAfter = {...ctx.style, ...this.props?.style };
+    ctx.style = styleAfter;
+
     this.children.forEach(c => {
-      const layoutRect = c.layout(x, y);
-      y += layoutRect.h;
+      let childY = y;
+      const layoutRect = c.layout(ctx, x, childY, w, h);
+      childY += layoutRect.h;
+      if (typeof w === 'undefined') w = (w || 0) + layoutRect.w
+      if (typeof h === 'undefined') h = (h || 0) + layoutRect.h
     });
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    return { x, y, w, h };
+
+    ctx.style = styleBefore;
+
+    return this.rect = { x, y, w, h };
   }
 
   render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    ctx.rect(this.x , this.y, this.w, this.h);
+    ctx.rect(this.rect.x , this.rect.y, this.rect.w, this.rect.h);
     ctx.clip();
     this.children.forEach(c => c.render(ctx));
-    ctx.save();
   }
 }
