@@ -4,13 +4,18 @@ import { LayoutContext } from './types';
 
 export interface TextProps {
   style?: TextStyle,
-  children: string | [string]
+  children: string | number | [string] | [number]
 }
 
 export default class TextElement extends Node {
+  type = 'text'
+
+  textContent: string
+
   constructor(props: TextProps) {
     super();
     this.props = props;
+    this.textContent = String(props.children)
   }
 
   layout(
@@ -53,7 +58,7 @@ export default class TextElement extends Node {
     ctx.save();
     ctx.font = `${fontSize}px serif`;
     ctx.fillStyle = color;
-    ctx.fillText(String(this.props.children), this.rect.x, this.rect.y + fontSize);
+    ctx.fillText(String(this.textContent), this.rect.x, this.rect.y + fontSize);
     ctx.restore();
   }
 }

@@ -49,6 +49,7 @@ const hostConfig = {
   },
 
   createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
+    debugger;
     // A TextNode instance is returned because literal strings cannot change their value later on update
     return new Text({ children: text });
   },
@@ -65,7 +66,7 @@ const hostConfig = {
       } else if (propName === 'children') {
         // Set the textContent only for literal string or number children, whereas
         // nodes will be appended in `appendChild`
-        if (typeof propValue === 'string' || typeof propValue === 'number') {
+        if ((typeof propValue === 'string' || typeof propValue === 'number') && cvsElement.type !== 'text') {
           cvsElement.children = [new Text({ children: String(propValue) })];
         }
         // const children = Array.isArray(propValue) ? propValue : [propValue];
@@ -162,6 +163,7 @@ const hostConfig = {
       if (propName === 'children') {
         const propValue = newProps[propName];
         if (typeof propValue === 'string' || typeof propValue === 'number') {
+          debugger
           cvsElement.textContent = propValue;
         }
         return;
@@ -196,6 +198,8 @@ const hostConfig = {
         }
       }
     });
+
+    rootElement.render();
   },
 
   commitMount(cvsElement, type, newProps, internalInstanceHandle) {
@@ -216,12 +220,17 @@ const TinyDOMRenderer = Reconciler(
   // debugMethods(hostConfig, ['now', 'getChildHostContext', 'shouldSetTextContent'])
 );
 
+let rootElement;
+
 export default {
   render(element, ctx) {
     let root = ctx._reactRootContainer;
 
     if (!root) {
-      const newRoot = TinyDOMRenderer.createContainer(new Root(ctx));
+      if (!rootElement) {
+        rootElement = new Root(ctx);
+      }
+      const newRoot = TinyDOMRenderer.createContainer(rootElement);
       root = ctx._reactRootContainer = newRoot;
 
       TinyDOMRenderer.injectIntoDevTools({

@@ -13,6 +13,8 @@ export default class RootElement extends Node {
    * @param {CanvasRenderingContext2D} ctx 
    */
   render() {
+    // @ts-ignore
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.rect = this.layout(this.ctx);
     this.children.forEach(c => c.render(this.ctx))
   }
